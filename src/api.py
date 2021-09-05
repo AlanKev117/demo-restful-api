@@ -46,7 +46,7 @@ class PriorityQueueKey(Resource):
 
     def post(self, index):
         args = parser.parse_args()
-        key = args["key"]
+        key = int(args["key"])
 
         try:
             PQ.insert(index, key)
@@ -60,11 +60,14 @@ class PriorityQueueKey(Resource):
     def put(self, index):
         abort_if_pq_empty()
         args = parser.parse_args()
-        key = args['key']
-        if key > PQ.key[index]:
-            PQ.increaseKey(index, key)
-        elif key < PQ.key[index]:
-            PQ.decreaseKey(index, key)
+        key = int(args['key'])
+        try:
+            if key > PQ.key[index]:
+                PQ.increaseKey(index, key)
+            elif key < PQ.key[index]:
+                PQ.decreaseKey(index, key)
+        except:
+            abort(400, message="Index not storing a key yet")
         return {"index": index, "key": key}, 201
 
 
@@ -81,7 +84,7 @@ class PriorityQueue(Resource):
         abort_if_pq_empty()
         res = {"highest": {}, "content": []}
         for heap_index, index in enumerate(PQ.pq):
-            if index:
+            if index is not None:
                 key = PQ.key[index]
                 if heap_index == 1:
                     res["highest"] = {"index": index, "key": key}
