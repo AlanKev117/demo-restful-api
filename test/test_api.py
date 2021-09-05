@@ -61,8 +61,6 @@ def test_pq_operations(api_base_address, pq_endpoint, pq_data, pq_get_data):
     # Testing get request to pq
     res = requests.get(pq_endpoint)
     assert res.status_code == 200
-    print(res.json())
-    print(pq_get_data)
     assert res.json() == pq_get_data
 
     # Testing put and get request to pq index
